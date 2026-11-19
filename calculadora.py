@@ -2,7 +2,9 @@ import tkinter as tk
 
 # variáveis
 nextClear = False
-fontVisor = 24
+fontVisor = ("Arial", 24)
+calc = ""
+clearBeforeType = True
 
 janela = tk.Tk()
 janela.title("Calculadora")
@@ -16,22 +18,30 @@ def deletar():
 
 def digitar(caracter):
     textoVisor = visor.get()
-    lastChar = ""
-    lockChars = ["+", "-", "*", "/", "."]
-    if textoVisor != "":
-        lastChar = textoVisor[-1]
-    if not lastChar in lockChars and not caracter in lockChars:
-        visor.insert(tk.END, caracter)
+    opChars = ["+", "-", "*", "/"]
+    if caracter == "." and caracter in textoVisor:
+        return
+    if caracter in opChars:
+        if  textoVisor == "":
+            return
+        global calc
+        calc += textoVisor + str(caracter)
+        limpar()
+        return
+    visor.insert(tk.END, caracter)
     
 def calcular():
+    global calc
     textoVisor = visor.get()
+    calc += textoVisor
     resultado = ""
     limpar()
     try:
-        resultado = eval(textoVisor)
+        resultado = eval(calc)
     except:
         resultado = "Erro: Expressão incorreta"
     visor.insert(tk.END, resultado)
+    calc = ""
 
 visor = tk.Entry(janela, width=24, justify="right", font=fontVisor)
 visor.grid(row=0, column=0, columnspan=4, padx=5, pady=5)
